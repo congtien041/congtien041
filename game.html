@@ -93,12 +93,12 @@
             });
         }
 
-        // TẢI ĐIỂM BẰNG FETCH REST API
         async function updateLeaderboardTable() {
             try {
                 const response = await fetch(`${SUPABASE_URL}/rest/v1/leaderboard?select=player_name,score&order=score.desc&limit=10`, {
                     method: 'GET',
-                    headers: { 'apikey': API_KEY, 'Authorization': `Bearer ${API_KEY}` }
+                    headers: { 'apikey': API_KEY, 'Authorization': `Bearer ${API_KEY}` },
+                    cache: 'no-store' 
                 });
                 const data = await response.json();
                 renderLeaderboard(data);
@@ -153,14 +153,41 @@
             uiScore.innerText = `Điểm của bạn: ${score}`; playerNameInput.style.display = 'block'; actionBtn.innerText = "Nộp điểm & Chơi lại"; gameUI.style.display = 'flex';
         }
 
-        // LƯU ĐIỂM BẰNG FETCH REST API
+        // TÍNH NĂNG CHỐNG TRÙNG TÊN VÀ LƯU ĐIỂM
         actionBtn.addEventListener('click', async () => {
-            if (actionBtn.innerText.includes("Nộp điểm")) {
-                const name = playerNameInput.value.trim() || "Anonymous";
-                actionBtn.innerText = "Đang lưu..."; actionBtn.disabled = true;
+            if (actionBtn.innerText.toUpperCase().includes("NỘP")) {
+                const name = playerNameInput.value.trim();
+                
+                // 1. Kiểm tra xem người chơi có nhập tên chưa
+                if (!name) {
+                    alert("Vui lòng nhập tên của bạn để lưu thành tích!");
+                    playerNameInput.focus();
+                    return;
+                }
+
+                actionBtn.innerText = "ĐANG KIỂM TRA..."; 
+                actionBtn.disabled = true;
 
                 try {
-                    await fetch(`${SUPABASE_URL}/rest/v1/leaderboard`, {
+                    // 2. Chặn trùng tên: Gửi yêu cầu tìm xem tên này đã tồn tại chưa
+                    const checkRes = await fetch(`${SUPABASE_URL}/rest/v1/leaderboard?player_name=eq.${encodeURIComponent(name)}&select=player_name`, {
+                        method: 'GET',
+                        headers: { 'apikey': API_KEY, 'Authorization': `Bearer ${API_KEY}` }
+                    });
+                    const existingUsers = await checkRes.json();
+
+                    // Nếu mảng trả về có dữ liệu, nghĩa là tên đã tồn tại
+                    if (existingUsers.length > 0) {
+                        alert(`Tên "${name}" đã có người sử dụng. Vui lòng chọn tên khác!`);
+                        actionBtn.innerText = "Nộp điểm & Chơi lại"; 
+                        actionBtn.disabled = false;
+                        playerNameInput.focus();
+                        return; // Ngắt quá trình lưu
+                    }
+
+                    // 3. Tiến hành lưu nếu tên hợp lệ
+                    actionBtn.innerText = "ĐANG LƯU...";
+                    const postResponse = await fetch(`${SUPABASE_URL}/rest/v1/leaderboard`, {
                         method: 'POST',
                         headers: {
                             'apikey': API_KEY,
@@ -170,21 +197,29 @@
                         },
                         body: JSON.stringify({ player_name: name, score: score })
                     });
+                    
+                    if(!postResponse.ok) {
+                        const errorData = await postResponse.json();
+                        alert("GỬI ĐIỂM LỖI: " + JSON.stringify(errorData));
+                    }
                 } catch (err) {
-                    console.error("Lỗi khi lưu điểm:", err);
-                    alert("Có lỗi khi lưu điểm, vui lòng thử lại!");
+                    console.error("Lỗi hệ thống:", err);
                 }
 
+                await new Promise(resolve => setTimeout(resolve, 500));
+
                 await updateLeaderboardTable();
-                actionBtn.disabled = false; playerNameInput.value = ''; playerNameInput.style.display = 'none'; startGame();
+                actionBtn.disabled = false; 
+                playerNameInput.value = ''; 
+                playerNameInput.style.display = 'none'; 
+                startGame();
             } else {
-                playerNameInput.style.display = 'none'; startGame();
+                playerNameInput.style.display = 'none'; 
+                startGame();
             }
         });
 
         playerNameInput.style.display = 'none';
-        
-        // Chạy tải dữ liệu khi vừa mở trang
         updateLeaderboardTable();
     </script>
 </body>
