@@ -81,7 +81,7 @@
   <p>Thử thách kỹ năng của bạn ngay trên hồ sơ của tôi! Nhấn vào banner để chơi game và lưu điểm số vào bảng xếp hạng.</p>
   
   <!-- ĐƯỜNG DẪN ĐẾN TRANG GAME CỦA BẠN (Thay URL sau khi deploy thành công) -->
-  <a href="https://YOUR_GITHUB_USERNAME.github.io/YOUR_REPO_NAME/game.html" target="_blank">
+  <a href="https://congtien041.github.io/congtien041/game.html" target="_blank">
     <img src="https://capsule-render.vercel.app/api?type=rect&color=000000&stroke=00FFFF&strokeWidth=2&height=120&section=header&text=🕹️%20PLAY%20MINI%20GAME%20🕹️&fontSize=32&fontColor=00FFFF&animation=blinking&desc=Click%20To%20Break%20The%20Leaderboard&descAlignY=75&descColor=FF0055" width="80%" alt="Play Game Banner" />
   </a>
 </div>
