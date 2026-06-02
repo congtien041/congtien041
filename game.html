@@ -96,4 +96,96 @@
         // TẢI ĐIỂM BẰNG FETCH REST API
         async function updateLeaderboardTable() {
             try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/leaderboard?select=player_name,score&order=score.desc&limit=10`, {
+                    method: 'GET',
+                    headers: { 'apikey': API_KEY, 'Authorization': `Bearer ${API_KEY}` }
+                });
+                const data = await response.json();
+                renderLeaderboard(data);
+            } catch (err) {
+                console.error("Lỗi fetch API:", err);
+                leaderboardData.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#ff0055;">Lỗi tải dữ liệu</td></tr>`;
+            }
+        }
+
+        function escapeHTML(str) { return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)); }
+
+        window.addEventListener('keydown', (e) => { if (e.code === 'Space') { e.preventDefault(); jump(); } });
+        canvas.addEventListener('touchstart', (e) => { e.preventDefault(); jump(); });
+        function jump() { if (player.grounded && isPlaying) { player.vy = player.jumpForce; player.grounded = false; } }
+
+        function startGame() {
+            obstacles = []; score = 0; gameSpeed = 5; spawnTimer = 0; player.y = 250; player.vy = 0; isPlaying = true; gameUI.style.display = 'none'; gameLoop();
+        }
+
+        function gameLoop() {
+            if (!isPlaying) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = '#1f293d'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(0, 300); ctx.lineTo(canvas.width, 300); ctx.stroke();
+
+            player.vy += gravity; player.y += player.vy;
+            if (player.y + player.size >= 300) { player.y = 300 - player.size; player.vy = 0; player.grounded = true; }
+            ctx.fillStyle = player.color; ctx.shadowBlur = 15; ctx.shadowColor = player.color; ctx.fillRect(player.x, player.y, player.size, player.size); ctx.shadowBlur = 0; 
+
+            spawnTimer++;
+            if (spawnTimer > Math.max(50, 100 - gameSpeed * 2)) {
+                let height = Math.random() * 40 + 20;
+                obstacles.push({ x: canvas.width, y: 300 - height, width: 20, height: height, color: '#ff0055' }); spawnTimer = 0;
+            }
+
+            for (let i = obstacles.length - 1; i >= 0; i--) {
+                let obs = obstacles[i]; obs.x -= gameSpeed;
+                ctx.fillStyle = obs.color; ctx.shadowBlur = 10; ctx.shadowColor = obs.color; ctx.fillRect(obs.x, obs.y, obs.width, obs.height); ctx.shadowBlur = 0;
+                
+                if (player.x < obs.x + obs.width && player.x + player.size > obs.x && player.y < obs.y + obs.height && player.y + player.size > obs.y) {
+                    gameOver(); return;
+                }
+                if (obs.x + obs.width < player.x && !obs.passed) { score += 10; obs.passed = true; gameSpeed += 0.2; }
+                if (obs.x + obs.width < 0) obstacles.splice(i, 1);
+            }
+            ctx.fillStyle = '#ffffff'; ctx.font = 'bold 18px Arial'; ctx.fillText(`SCORE: ${score}`, 20, 35);
+            animationFrameId = requestAnimationFrame(gameLoop);
+        }
+
+        function gameOver() {
+            isPlaying = false; cancelAnimationFrame(animationFrameId);
+            uiTitle.innerText = "GAME OVER"; uiTitle.style.color = "#ff0055"; uiTitle.style.textShadow = "0 0 10px #ff0055";
+            uiScore.innerText = `Điểm của bạn: ${score}`; playerNameInput.style.display = 'block'; actionBtn.innerText = "Nộp điểm & Chơi lại"; gameUI.style.display = 'flex';
+        }
+
+        // LƯU ĐIỂM BẰNG FETCH REST API
+        actionBtn.addEventListener('click', async () => {
+            if (actionBtn.innerText.includes("Nộp điểm")) {
+                const name = playerNameInput.value.trim() || "Anonymous";
+                actionBtn.innerText = "Đang lưu..."; actionBtn.disabled = true;
+
+                try {
+                    await fetch(`${SUPABASE_URL}/rest/v1/leaderboard`, {
+                        method: 'POST',
+                        headers: {
+                            'apikey': API_KEY,
+                            'Authorization': `Bearer ${API_KEY}`,
+                            'Content-Type': 'application/json',
+                            'Prefer': 'return=representation'
+                        },
+                        body: JSON.stringify({ player_name: name, score: score })
+                    });
+                } catch (err) {
+                    console.error("Lỗi khi lưu điểm:", err);
+                    alert("Có lỗi khi lưu điểm, vui lòng thử lại!");
+                }
+
+                await updateLeaderboardTable();
+                actionBtn.disabled = false; playerNameInput.value = ''; playerNameInput.style.display = 'none'; startGame();
+            } else {
+                playerNameInput.style.display = 'none'; startGame();
+            }
+        });
+
+        playerNameInput.style.display = 'none';
+        
+        // Chạy tải dữ liệu khi vừa mở trang
+        updateLeaderboardTable();
+    </script>
+</body>
+</html>
