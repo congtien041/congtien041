@@ -42,6 +42,8 @@
   <img src="https://img.shields.io/badge/Itch.io-FF0B34?style=flat-square&logo=itch.io&logoColor=white" />
 </p>
 
+---
+
 ## 📊 GitHub Telemetry
 
 <div align="center">
@@ -55,24 +57,36 @@
   <img src="https://streak-stats.demolab.com/?user=congtien041&theme=radical&hide_border=true" alt="GitHub Streak" />
 </div>
 
+---
+
 ## 🚀 [ FEATURED_PROJECTS ]
 
 | 📂 PROJECT_NAME | 📝 CLASSIFICATION_DATA | ⚙️ ENGINE_&_TECH |
 | :--- | :--- | :--- |
-| **[Street Beat](https://github.com/XTH-CNTT-FPOLY-HCM/LTGA-FpolyxNTM-004-RelicSeeker)** | Game chạy vô tận (Endless Runner) 3D kết hợp cơ chế nhịp điệu, người chơi điều khiển nhân vật thu thập vật phẩm đồng bộ theo giai điệu bài hát. | ![Unity](https://img.shields.io/badge/Unity-121212?style=flat-square&logo=unity) ![C#](https://img.shields.io/badge/C%23-239120?style=flat-square) |
+| **[Street Beat](https://github.com/XTH-CNTT-FPOLY-HCM/LTGA-FpolyxNTM-004-RelicSeeker)** | Game chạy vô chậm (Endless Runner) 3D kết hợp cơ chế nhịp điệu, người chơi điều khiển nhân vật thu thập vật phẩm đồng bộ theo giai điệu bài hát. | ![Unity](https://img.shields.io/badge/Unity-121212?style=flat-square&logo=unity) ![C#](https://img.shields.io/badge/C%23-239120?style=flat-square) |
 | **[RelicSeeker](https://github.com/XTH-CNTT-FPOLY-HCM/LTGA-FpolyxNTM-1125-StreetBeat)** | Game phiêu lưu giải đố theo lượt (Turn-based Puzzle) lấy cảm hứng từ cơ chế "GO", nơi người chơi điều khiển nhân vật khám phá các di tích cổ, giải mã các bẫy cơ học và tránh né kẻ địch để thu thập cổ vật. | ![Unity](https://img.shields.io/badge/Unity-121212?style=flat-square&logo=unity) ![C#](https://img.shields.io/badge/C%23-239120?style=flat-square) |
 
-
-<br>
+---
 
 ## 📈 [ ACTIVITY_RADAR ]
 
 <div align="center">
-  <!-- Neon Activity Graph -->
   <img src="https://github-readme-activity-graph.vercel.app/graph?username=congtien041&bg_color=000000&color=00FFFF&line=FF0055&point=FFFFFF&area=true&hide_border=true" alt="Contribution Graph" />
 </div>
 
 ---
+
+## 🕹️ [ ARCADE_ZONE ]
+<div align="center">
+  <p>Thử thách kỹ năng của bạn ngay trên hồ sơ của tôi! Nhấn vào banner để chơi game và lưu điểm số vào bảng xếp hạng.</p>
+  
+  <!-- ĐƯỜNG DẪN ĐẾN TRANG GAME CỦA BẠN (Thay URL sau khi deploy thành công) -->
+  <a href="https://YOUR_GITHUB_USERNAME.github.io/YOUR_REPO_NAME/game.html" target="_blank">
+    <img src="https://capsule-render.vercel.app/api?type=rect&color=000000&stroke=00FFFF&strokeWidth=2&height=120&section=header&text=🕹️%20PLAY%20MINI%20GAME%20🕹️&fontSize=32&fontColor=00FFFF&animation=blinking&desc=Click%20To%20Break%20The%20Leaderboard&descAlignY=75&descColor=FF0055" width="80%" alt="Play Game Banner" />
+  </a>
+</div>
+
+<br>
 
 <div align="center">
   <a href="https://visitcount.itsvg.in">
