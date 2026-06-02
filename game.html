@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Space Jump - Arcade Leaderboard</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background-color: #0b0f19; color: #ffffff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; overflow-x: hidden; }
@@ -24,12 +23,12 @@
         .btn:hover { background: #00ffff; color: #000; box-shadow: 0 0 20px #00ffff; }
         input[type="text"] { background: #1a233d; border: 2px solid #ff0055; color: #fff; padding: 10px; border-radius: 4px; text-align: center; font-size: 1.1rem; outline: none; margin-top: 10px; width: 80%; }
         .instruction { margin-top: 15px; font-size: 0.9rem; color: #5f7597; text-align: center; }
-        .mode-badge { font-size: 0.8rem; padding: 2px 6px; border-radius: 3px; margin-left: 10px; vertical-align: middle; }
+        .mode-badge { font-size: 0.8rem; padding: 2px 6px; border-radius: 3px; margin-left: 10px; vertical-align: middle; background: #3ECF8E; }
     </style>
 </head>
 <body>
 
-    <h1>🕹️ NEON SPACE RUNNER <span id="modeDb" class="mode-badge" style="background:#5f7597;">Checking...</span></h1>
+    <h1>🕹️ NEON SPACE RUNNER <span class="mode-badge">API DIRECT</span></h1>
     
     <div class="container">
         <div class="game-box">
@@ -63,23 +62,9 @@
     <p class="instruction">Điều khiển: Nhấn phím <b>SPACE</b> hoặc chạm vào màn hình để Nhảy.</p>
 
     <script>
-        // Đã cập nhật key chuẩn của bạn
+        // CẤU HÌNH API THUẦN
         const SUPABASE_URL = 'https://gxzvsjwgosbfpxcuorft.supabase.co'; 
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd4enZzandnb3NiZnB4Y3VvcmZ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA0MDA2NzYsImV4cCI6MjA5NTk3NjY3Nn0.6kbVlNUMie5RZK5G_o6nD5lR0ug6oUQd0gva0bPofYs';
-        
-        let supabaseClient = null;
-        let useSupabase = false;
-
-        try {
-            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            useSupabase = true;
-            document.getElementById('modeDb').innerText = "ONLINE";
-            document.getElementById('modeDb').style.background = "#3ECF8E";
-        } catch (e) {
-            console.error("Khởi tạo lỗi:", e);
-            document.getElementById('modeDb').innerText = "LOCAL MODE";
-            document.getElementById('modeDb').style.background = "#ff0055";
-        }
+        const API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd4enZzandnb3NiZnB4Y3VvcmZ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA0MDA2NzYsImV4cCI6MjA5NTk3NjY3Nn0.6kbVlNUMie5RZK5G_o6nD5lR0ug6oUQd0gva0bPofYs';
 
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
@@ -108,90 +93,7 @@
             });
         }
 
+        // TẢI ĐIỂM BẰNG FETCH REST API
         async function updateLeaderboardTable() {
-            if (useSupabase) {
-                try {
-                    let { data, error } = await supabaseClient.from('leaderboard').select('player_name, score').order('score', { ascending: false }).limit(10);
-                    if (error) throw error;
-                    renderLeaderboard(data);
-                } catch (err) {
-                    console.error("Lỗi fetch API:", err);
-                }
-            }
-        }
-
-        function escapeHTML(str) { return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)); }
-
-        window.addEventListener('keydown', (e) => { if (e.code === 'Space') { e.preventDefault(); jump(); } });
-        canvas.addEventListener('touchstart', (e) => { e.preventDefault(); jump(); });
-        function jump() { if (player.grounded && isPlaying) { player.vy = player.jumpForce; player.grounded = false; } }
-
-        function startGame() {
-            obstacles = []; score = 0; gameSpeed = 5; spawnTimer = 0; player.y = 250; player.vy = 0; isPlaying = true; gameUI.style.display = 'none'; gameLoop();
-        }
-
-        function gameLoop() {
-            if (!isPlaying) return;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.strokeStyle = '#1f293d'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(0, 300); ctx.lineTo(canvas.width, 300); ctx.stroke();
-
-            player.vy += gravity; player.y += player.vy;
-            if (player.y + player.size >= 300) { player.y = 300 - player.size; player.vy = 0; player.grounded = true; }
-            ctx.fillStyle = player.color; ctx.shadowBlur = 15; ctx.shadowColor = player.color; ctx.fillRect(player.x, player.y, player.size, player.size); ctx.shadowBlur = 0; 
-
-            spawnTimer++;
-            if (spawnTimer > Math.max(50, 100 - gameSpeed * 2)) {
-                let height = Math.random() * 40 + 20;
-                obstacles.push({ x: canvas.width, y: 300 - height, width: 20, height: height, color: '#ff0055' }); spawnTimer = 0;
-            }
-
-            for (let i = obstacles.length - 1; i >= 0; i--) {
-                let obs = obstacles[i]; obs.x -= gameSpeed;
-                ctx.fillStyle = obs.color; ctx.shadowBlur = 10; ctx.shadowColor = obs.color; ctx.fillRect(obs.x, obs.y, obs.width, obs.height); ctx.shadowBlur = 0;
-                
-                if (player.x < obs.x + obs.width && player.x + player.size > obs.x && player.y < obs.y + obs.height && player.y + player.size > obs.y) {
-                    gameOver(); return;
-                }
-                if (obs.x + obs.width < player.x && !obs.passed) { score += 10; obs.passed = true; gameSpeed += 0.2; }
-                if (obs.x + obs.width < 0) obstacles.splice(i, 1);
-            }
-            ctx.fillStyle = '#ffffff'; ctx.font = 'bold 18px Arial'; ctx.fillText(`SCORE: ${score}`, 20, 35);
-            animationFrameId = requestAnimationFrame(gameLoop);
-        }
-
-        function gameOver() {
-            isPlaying = false; cancelAnimationFrame(animationFrameId);
-            uiTitle.innerText = "GAME OVER"; uiTitle.style.color = "#ff0055"; uiTitle.style.textShadow = "0 0 10px #ff0055";
-            uiScore.innerText = `Điểm của bạn: ${score}`; playerNameInput.style.display = 'block'; actionBtn.innerText = "Nộp điểm & Chơi lại"; gameUI.style.display = 'flex';
-        }
-
-        actionBtn.addEventListener('click', async () => {
-            if (actionBtn.innerText.includes("Nộp điểm")) {
-                const name = playerNameInput.value.trim() || "Anonymous";
-                actionBtn.innerText = "Đang lưu..."; actionBtn.disabled = true;
-
-                if (useSupabase) {
-                    try {
-                        // Thêm .select() để bắt lỗi rõ ràng hơn
-                        const { data, error } = await supabaseClient.from('leaderboard').insert([{ player_name: name, score: score }]).select();
-                        if (error) {
-                            alert("LỖI SUPABASE: " + error.message); // Hiển thị popup lỗi đỏng đảnh nếu bị chặn
-                            throw error;
-                        }
-                    } catch (err) {
-                        console.error("Insert Error:", err);
-                    }
-                }
-
-                await updateLeaderboardTable();
-                actionBtn.disabled = false; playerNameInput.value = ''; playerNameInput.style.display = 'none'; startGame();
-            } else {
-                playerNameInput.style.display = 'none'; startGame();
-            }
-        });
-
-        playerNameInput.style.display = 'none';
-        updateLeaderboardTable();
-    </script>
-</body>
-</html>
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v
