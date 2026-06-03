@@ -63,8 +63,8 @@
 
 | 📂 PROJECT_NAME | 📝 CLASSIFICATION_DATA | ⚙️ ENGINE_&_TECH |
 | :--- | :--- | :--- |
-| **[Street Beat](https://github.com/XTH-CNTT-FPOLY-HCM/LTGA-FpolyxNTM-004-RelicSeeker)** | Game chạy vô chậm (Endless Runner) 3D kết hợp cơ chế nhịp điệu, người chơi điều khiển nhân vật thu thập vật phẩm đồng bộ theo giai điệu bài hát. | ![Unity](https://img.shields.io/badge/Unity-121212?style=flat-square&logo=unity) ![C#](https://img.shields.io/badge/C%23-239120?style=flat-square) |
-| **[RelicSeeker](https://github.com/XTH-CNTT-FPOLY-HCM/LTGA-FpolyxNTM-1125-StreetBeat)** | Game phiêu lưu giải đố theo lượt (Turn-based Puzzle) lấy cảm hứng từ cơ chế "GO", nơi người chơi điều khiển nhân vật khám phá các di tích cổ, giải mã các bẫy cơ học và tránh né kẻ địch để thu thập cổ vật. | ![Unity](https://img.shields.io/badge/Unity-121212?style=flat-square&logo=unity) ![C#](https://img.shields.io/badge/C%23-239120?style=flat-square) |
+| **[Street Beat](#)** | Game chạy vô chậm (Endless Runner) 3D kết hợp cơ chế nhịp điệu, người chơi điều khiển nhân vật thu thập vật phẩm đồng bộ theo giai điệu bài hát. | ![Unity](https://img.shields.io/badge/Unity-121212?style=flat-square&logo=unity) ![C#](https://img.shields.io/badge/C%23-239120?style=flat-square) |
+| **[RelicSeeker](#)** | Game phiêu lưu giải đố theo lượt (Turn-based Puzzle) lấy cảm hứng từ cơ chế "GO", nơi người chơi điều khiển nhân vật khám phá các di tích cổ, giải mã các bẫy cơ học và tránh né kẻ địch để thu thập cổ vật. | ![Unity](https://img.shields.io/badge/Unity-121212?style=flat-square&logo=unity) ![C#](https://img.shields.io/badge/C%23-239120?style=flat-square) |
 
 ---
 
